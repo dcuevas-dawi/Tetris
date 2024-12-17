@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tetris Personalizado</title>
+        <style>
+            #tetris{
+                display: block;
+                /*margin: 0 auto;*/
+                background: #000;
+            }
+            body{
+                display: flex;
+                justify-content: space-evenly;
+                margin-top: 30px;
+            }
+            #puntuacion{
+                font-size: 30px;
+                align-self: center;
+            }
+            #proximaPieza{
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="puntuacion"></div>
+        <canvas id="tetris" width="300" height="600"></canvas>
+        <canvas id="proximaPieza"></canvas>
+        <script src="tetris.js"></script>
+    </body>
+</html>
+
+<!--  He añadido los div's de puntuación y de próxima pieza en el html directamente ya que me parece muy forzado 
+      hacerlo desde javascript con document.createElement y appendChild, por ejemplo -->
