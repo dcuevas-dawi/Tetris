@@ -16,7 +16,7 @@ const ventanaProximaPieza = document.getElementById('proximaPieza');
 ventanaProximaPieza.width = tamañoCelda*columnas;
 ventanaProximaPieza.height = tamañoCelda*filas;
 
-let xInicial = x = 0;
+let xInicial = x = 0;    //Declaramos algunas variables globales que utilizaremos más adelante
 let yInicial = y = 4;
 let piezaActual;
 let piezaProxima;
@@ -24,7 +24,7 @@ let primeraJugada = true;
 
 let puntuacion = 0;
 
-let tiempo = 500;
+let tiempo = 500;           // Milisegundos iniciales entre movimientos
 let reduccionTiempo = 5;    // Milisegundos de reducción por pieza generada
 let tiempoMinimo = 100;     // Milisegundos minimos de juego
 
@@ -53,7 +53,7 @@ const piezas = [{nombre:"C", forma: [[1,1,1],
                 {nombre:"T", forma: [[1,1,1],
                                      [0,1,0]], probabilidad: 0.2, color: "orange"}];  
 
-let tablero = new Array;
+let tablero = new Array;                  //Montamos el array bidimensional del tablero del juego y lo llenamos de 0
 
 for (let i = 0; i < filas; i++) {
     tablero[i] = new Array;
@@ -64,7 +64,7 @@ for (let i = 0; i < filas; i++) {
 
 let tableroProximaPieza = new Array;
 
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 5; i++) {            //Montamos el array bidimensional del tablero de la proxima pieza y lo llenamos de 0
     tableroProximaPieza[i] = new Array;
     for (let j = 0; j < 5; j++) {
         tableroProximaPieza[i].push('0');
@@ -73,10 +73,10 @@ for (let i = 0; i < 5; i++) {
 
 //console.log(tablero); 
 
-function dibujarTablero() {
+function dibujarTablero() {                  // Función para dibujar el tablero y su fondo
 
     
-    let counter = 0;
+    let counter = 0;            // Contador para diferenciar casillas pares e impares y alternar colores
 
     for (let i = 0; i < filas; i++) {
         if(columnas%2==0){
@@ -103,7 +103,7 @@ function dibujarTablero() {
     }
 }
 
-function dibujarTableroProximaPieza() {
+function dibujarTableroProximaPieza() {            // Misma lógica que la función anterior, pero mas sencilla, para dibujar el tablero de la proxima pieza
 
     
     let counter = 0;
@@ -123,7 +123,7 @@ function dibujarTableroProximaPieza() {
 }
 
 
-function generarPieza(){
+function generarPieza(){                  // Generamos una piezas aleatoria de la lista en base a su probabilidad
 
     let total = 0;
     let listaProbabilidadesPiezas = new Map;
@@ -192,7 +192,8 @@ function dibujarProximaPieza(pieza, x, y){
     
 }
 
-function chequearColisiones(pieza, x, y){
+function chequearColisiones(pieza, x, y){     //Esta función comprueba si vamos a colisionar con una pieza o el fondo del tablero con el 
+                                              //flujo normal del juego, es decir, de forma descendiente
 
     if(x + pieza.forma.length >= filas){       //Comprobamos si hemos llegado al final del tablero
         return true;
@@ -200,8 +201,8 @@ function chequearColisiones(pieza, x, y){
 
     for(let i = 0; i < pieza.forma.length; i++){
         
-        for(let j = 0; j < pieza.forma[i].length; j++){        //Comprobamos si una casilla mas abajo de la parte de una
-                                                               //pieza va a tener colisión en el siguiente movimiento
+        for(let j = 0; j < pieza.forma[i].length; j++){        //Comprobamos la pieza va a tener colisión en el siguiente movimiento
+
             if((tablero[x+i+1][y+j] == 1) && 
                 (pieza.forma[i][j] == 1)){
                 return true;
@@ -215,7 +216,7 @@ function chequearColisiones(pieza, x, y){
 
 }
 
-function chequearColisionesLaterales(pieza, direccion){ 
+function chequearColisionesLaterales(pieza, direccion){           //Esta función comprueba si vamos a chocar lateralmente al movernos lateralmente con 'a' o 'd'
 
     if(direccion == "izquierda"){          //Comprobamos colisión con otra pieza a la izquierda
 
@@ -256,7 +257,7 @@ function chequearColisionesLaterales(pieza, direccion){
 
  }
 
-function posicionaPieza(pieza, x, y){
+function posicionaPieza(pieza, x, y){         // Esta función fija la pieza al tablero y lo actualiza, entonces aparecerá en gris fija
 
     for (let i = 0; i < pieza.forma.length; i++){
 
@@ -274,12 +275,12 @@ function posicionaPieza(pieza, x, y){
 
 }
 
-function eliminarLinea(x){
+function eliminarLinea(){       // Tras posicionar una pieza, esta funcion detecta si hemos completado una o varias lineas y las elimina
 
-    let contador;
-    let contadorTetris = 0;
+    let contador;                // Al llegar al numero de columnas, se entiende que la fila está completa y se borra
+    let contadorTetris = 0;      // Si hacemos tetris (4 filas en una sola vez) sumaremos más puntos
 
-    for (let i = x; i < filas; i++){
+    for (let i = x; i < filas; i++){      // Comprobamos todas las posiciones de la fila
 
         contador = 0;
 
@@ -287,21 +288,21 @@ function eliminarLinea(x){
 
             contador += +tablero[i][j];
             //console.log(contador);
+            
+        }
 
-            if (contador == columnas){
+        if (contador == columnas){       // Si se cumple la condición borramos la/s linea/s
     
-                tablero.splice(i,1);
-                tablero.unshift([]);
+            tablero.splice(i,1);
+            tablero.unshift([]);
 
-                for (let k = 0; k < columnas; k++) {
-                        tablero[0].push(0);
-                }
-                i--;            //Decremento i para compensar el haber eliminado una fila y no saltar la siguiente
-                puntuacion += 10;     //Aumentamos en 10 puntos el contador
-                contenedorPuntuacion.innerHTML = `Puntuación: ${puntuacion}`;
-                contadorTetris++;
+            for (let k = 0; k < columnas; k++) {
+                    tablero[0].push(0);
             }
-    
+            i--;            //Decremento i para compensar el haber eliminado una fila y no saltar la siguiente
+            puntuacion += 10;     //Aumentamos en 10 puntos el contador
+            contenedorPuntuacion.innerHTML = `Puntuación: ${puntuacion}`;
+            contadorTetris++;
         }
 
     }
@@ -343,13 +344,13 @@ function rotar(){
         }
     }
 
-        for (let i = 0; i < formaRotada.length; i++) {              //Aqui compruebo si la pieza rotada va a solisionar con otra del tablero
-            for (let j = 0; j < formaRotada[i].length; j++) {
-                if (formaRotada[i][j] == 1 && tablero[x + i][y + j] == 1) {
-                    return piezaActual.forma;
-                }
+    for (let i = 0; i < formaRotada.length; i++) {              //Aqui compruebo si la pieza rotada va a solisionar con otra del tablero
+        for (let j = 0; j < formaRotada[i].length; j++) {
+            if (formaRotada[i][j] == 1 && tablero[x + i][y + j] == 1) {
+                return piezaActual.forma;
             }
         }
+    }
 
     //console.log(formaRotada);
 
@@ -369,7 +370,7 @@ function reducirTiempo(){
 
 
 
-function actualizar(){
+function actualizar(){        // Toda la lógica de un ciclo de juego
 
     dibujarTablero();
     dibujarTableroProximaPieza();
@@ -401,7 +402,7 @@ function actualizar(){
                 window.location.reload();
             }, 1);
         }
-        eliminarLinea(x);
+        eliminarLinea();
         x = xInicial;
         y = yInicial;
         piezaActual = null;
@@ -410,7 +411,7 @@ function actualizar(){
 }
 
 
-function jugar(){
+function jugar(){  // Esta función no se muy bien como implementarla, actualizar() bastaría
 
     actualizar();
 
@@ -433,9 +434,9 @@ document.addEventListener('keydown', (e) => {    // EventListener para recoger l
         if(y > 0 && chequearColisionesLaterales(piezaActual, "izquierda")){
             y--;
         }
-        dibujarTablero();
+        dibujarTablero();     //Inmediatamente después de modificar 'y' actualizo los tableros para que sea un cambio inmediato
         dibujarPieza(piezaActual, y, x);
-        dibujarProximaPieza(piezaProxima, (piezaProxima.forma[0].length < 3) ? 2 : 1, 1);
+
     }
 
     if(e.key == "d"){     // La 'd' mueve hacia la derecha
@@ -444,7 +445,7 @@ document.addEventListener('keydown', (e) => {    // EventListener para recoger l
         }
         dibujarTablero();
         dibujarPieza(piezaActual, y, x);
-        dibujarProximaPieza(piezaProxima, (piezaProxima.forma[0].length < 3) ? 2 : 1, 1);
+
     }
 
     if(e.key == "s"){    // La 's' avanza un ciclo de actualizar() para ir hacia abajo más rápido
@@ -458,10 +459,10 @@ document.addEventListener('keydown', (e) => {    // EventListener para recoger l
         piezaActual.forma = rotar();
         dibujarTablero();
         dibujarPieza(piezaActual, y, x);
-        dibujarProximaPieza(piezaProxima, (piezaProxima.forma[0].length < 3) ? 2 : 1, 1);
+
     }
 
-    if(e.key == "ñ"){    // La 'ñ' hace que la próxima pieza sea la I
+    if(e.key == "ñ"){    // TRUCO La 'ñ' hace que la próxima pieza sea la I
 
         piezaProxima = {nombre:"I", forma: [[1],
                                             [1],
