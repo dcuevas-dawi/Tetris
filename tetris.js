@@ -411,15 +411,11 @@ function actualizar(){        // Toda la lógica de un ciclo de juego
 }
 
 
-function jugar(){  // Esta función no se muy bien como implementarla, actualizar() bastaría
+function jugar(){  // Esta función no se muy bien como implementarla, ya que hago toda la lógica
+    // del juego con la de actualizar() y creo que basta
 
-    actualizar();
 
-    dibujarTablero();
 
-    
-
-    
 }
 
 //setInterval(() => jugar(), 500);
